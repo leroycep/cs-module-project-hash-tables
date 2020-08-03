@@ -152,8 +152,14 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        pass
+        old_list = self.items
+        self.items = [None] * max(new_capacity, MIN_CAPACITY)
+        self.stored_items = 0
+        for entry in old_list:
+            current_entry = entry
+            while current_entry is not None:
+                self.put(current_entry.key, current_entry.value)
+                current_entry = current_entry.next
 
 
 if __name__ == "__main__":
