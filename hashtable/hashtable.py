@@ -84,7 +84,23 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.items[index] = HashTableEntry(key, value)
+        if self.items[index] is None:
+            self.items[index] = HashTableEntry(key, value)
+        else:
+            prev_entry = self.items[index]
+            current_entry = self.items[index]
+            while current_entry != None:
+                if current_entry.key == key:
+                    current_entry.value = value
+                    # Return here so that:
+                    # - we skip iterating through the rest of the entries
+                    # - the number of stored items is not incremented
+                    return
+                prev_entry = current_entry
+                current_entry = current_entry.next
+            # Append HashTableEntry to end of linked list of entries
+            prev_entry.next = HashTableEntry(key, value)
+        self.stored_items += 1
 
     def delete(self, key):
         """
@@ -95,10 +111,20 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if self.items[index] is None:
-            print("Value was not found in hashmap")
-        else:
-            self.items[index] = None
+
+        prev_entry = None
+        current_entry = self.items[index]
+        while current_entry is not None:
+            if current_entry.key == key:
+                if prev_entry is not None:
+                    prev_entry.next = current_entry.next
+                else:
+                    self.items[index] = current_entry.next
+                self.stored_items -= 1
+                return
+            prev_entry = current_entry
+            current_entry = current_entry.next
+        print("Value was not found in hashmap")
 
     def get(self, key):
         """
@@ -111,9 +137,12 @@ class HashTable:
         index = self.hash_index(key)
         if self.items[index] is None:
             return None
-        elif self.items[index].key == key:
-            return self.items[index].value
         else:
+            current_entry = self.items[index]
+            while current_entry != None:
+                if current_entry.key == key:
+                    return current_entry.value
+                current_entry = current_entry.next
             return None
 
     def resize(self, new_capacity):
