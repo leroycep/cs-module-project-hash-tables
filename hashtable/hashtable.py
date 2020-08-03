@@ -44,7 +44,7 @@ class HashTable:
 
         Implement this.
         """
-        return self.stored_items / self.capacity
+        return self.stored_items / len(self.items)
 
     def fnv1(self, key):
         """
@@ -83,6 +83,9 @@ class HashTable:
 
         Implement this.
         """
+        if self.get_load_factor() > 0.7:
+            self.resize(len(self.items) * 2)
+
         index = self.hash_index(key)
         if self.items[index] is None:
             self.items[index] = HashTableEntry(key, value)
@@ -110,6 +113,9 @@ class HashTable:
 
         Implement this.
         """
+        if self.get_load_factor() < 0.2:
+            self.resize(len(self.items) // 2)
+
         index = self.hash_index(key)
 
         prev_entry = None
