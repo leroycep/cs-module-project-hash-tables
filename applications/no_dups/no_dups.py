@@ -1,6 +1,24 @@
-def no_dups(s):
-    # Your code here
+import re
 
+word_re = re.compile(r"[a-z]+")
+
+
+def no_dups(s):
+    global word_re
+
+    seen_words = set({})
+    new_string = ""
+
+    for match in word_re.finditer(s.lower()):
+        word = match.group()
+        if word not in seen_words:
+            seen_words.add(word)
+            if new_string == "":
+                new_string = word
+            else:
+                new_string = new_string + " " + word
+
+    return new_string
 
 
 if __name__ == "__main__":
